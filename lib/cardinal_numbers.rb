@@ -6,13 +6,17 @@ class Integer
 
     def to_string
         return "zero" if self.zero?
-        result, thousands_counter, parse_by_thousand = "", 0, self
+        result, thousands_counter, parse_by_thousand = "", 0, self.abs
         until parse_by_thousand.zero?
-            result = thousands_counter.zero? || ( parse_by_thousand % 1000 ).zero? ? parse( parse_by_thousand % 1000 ) + result : parse( parse_by_thousand % 1000 ) + " " + @@powers[ thousands_counter ] + " " + result
+            if thousands_counter.zero? || ( parse_by_thousand % 1000 ).zero?
+                result = parse( parse_by_thousand % 1000 ) + result
+            else
+                result = parse( parse_by_thousand % 1000 ) + " " + @@powers[ thousands_counter ].to_s + ( result.empty? ? result : " " + result )
+            end
             parse_by_thousand /= 1000
             thousands_counter += 1
         end
-        result
+        self.negative? ? "negative " + result : result
     end
 
     private
